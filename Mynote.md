@@ -231,9 +231,70 @@ y = x
 x[1] = 100
 print y
 ```
-[1,100,3]
+[1,100,3]<br>
 2. 注意简单类型和容器类型的赋值区分[如何理解 Python 的赋值逻辑](https://www.cnblogs.com/andywenzhi/p/7453374.html)
 3. 如果说 C 程序是通过操纵内存地址而间接操作数据(每个变量固定对应一个内存地址，所以说操纵变量就是操纵内存地址），数据处于被动地位，那么Python则是直接操纵数据，数据处于主动地位，变量只是作为一种引用关系而存在，而不再拥有存储功能。Python 的这种操作让数据成为主体，数据与数据之间直接进行交互。而数据在Python中被称为对象(Object)。
+
+## 判断语句
+1. 虽然都是用 if 关键词定义判断，但与C，Java等语言不同，Python不使用 {} 将 if 语句控制的区域包含起来。Python使用的是缩进方法。同时，也不需要用 () 将判断条件括起来。
+2. 不同的缩进值表示不同的代码块
+3. Python不仅仅可以使用布尔型变量作为条件，它可以直接在if中使用任何表达式作为条件。
+4. 大部分表达式的值都会被当作True，但以下表达式值会被当作False：
+* False
+* None
+* 0
+* 空字符串，空列表，空字典，空集合
+
+## 循环
+1. Python会循环执行<statesments>，直到<condition>不满足为止。
+```
+while <condition>:
+    <statesments>
+```
+2.空容器会被当成 False ，因此可以用 while 循环来读取容器中的所有元素。
+```
+plays = set(['Hamlet', 'Macbeth', 'King Lear'])
+while plays:
+    play = plays.pop()
+    print 'Perform', play
+```
+3. for循环会遍历完<sequence>中所有元素为止
+```
+for <variable> in <sequence>:
+    <indented block of code>
+```
+4.```for i in range(100000):```然而这种写法有一个缺点：在循环前，它会生成一个长度为 100000 的临时列表。生成列表的问题在于，会有一定的时间和内存消耗，当数字从 100000 变得更大时，时间和内存的消耗会更加明显。为了解决这个问题，我们可以使用 xrange 来代替 range 函数，其效果与range函数相同，但是 xrange 并不会一次性的产生所有的数据。
+5.遇到 continue 的时候，程序会返回到循环的最开始重新执行。
+6.遇到 break 的时候，程序会跳出循环，不管循环条件是不是满足。
+7. 与if一样，while和for循环后面也可以跟着else语句，不过要和break一起连用。
+* 当循环正常结束时，循环条件不满足， else被执行；
+* 当循环被 break结束时，循环条件仍然满足， else不执行。
+
+### 列表推导公式
+1.更简单的方法来创建这个列表
+```
+values = [10, 21, 4, 7, 12]
+squares = [x**2 for x in values]
+```
+2. 还可以在列表推导式中加入条件进行筛选
+```
+values = [10, 21, 4, 7, 12]
+squares = [x**2 for x in values if x <= 10]
+```
+3. 也可以使用推导式生成集合和字典：
+```
+square_dict = {x: x**2 for x in values if x <= 10}
+```
+4. 计算上面例子中生成的列表中所有元素的和：
+```
+total = sum([x**2 for x in values if x <= 10])
+```
+但是，Python会生成这个列表，然后在将它放到垃圾回收机制中（因为没有变量指向它），这毫无疑问是种浪费。为了解决这种问题，与xrange()类似，Python使用产生式表达式来解决这个问题：
+```
+total = sum(x**2 for x in values if x <= 10)
+```
+
+
 
 
 
