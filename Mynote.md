@@ -294,6 +294,148 @@ total = sum([x**2 for x in values if x <= 10])
 total = sum(x**2 for x in values if x <= 10)
 ```
 
+### 函数
+1. 函数function，通常接受输入参数，并有返回值。它负责完成某项特定任务，而且相较于其他代码，具备相对的独立性。
+```
+def add(x, y):
+    """Add two numbers"""
+    a = x + y
+    return a
+```
+2. 函数通常有一下几个特征：
+   * 使用 def 关键词来定义一个函数。
+   * def 后面是函数的名称，括号中是函数的参数，不同的参数用 , 隔开， def foo(): 的形式是必须要有的，参数可以为空；
+   * 使用缩进来划分函数的内容；
+   * docstring 用 """ 包含的字符串，用来解释函数的用途，可省略；
+   * return 返回特定的值，如果省略，返回None 。
+   
+3. 使用函数时，只需要将参数换成特定的值传给函数。Python并没有限定参数的类型，因此可以使用不同的参数类型：
+```
+print add(2, 3)
+print add('foo', 'bar')
+```
+在这个例子中，如果传入的两个参数不可以相加，那么Python会将报错；如果传入的参数数目与实际不符合，也会报错。
+4. 可以在函数定义的时候给参数设定默认值，可以省略有默认值的参数，可以修改参数的默认值。
+5. 使用如下方法，可以使函数接受**不定数目的参数**：
+```
+def add(x, *args):
+    total = x
+    for arg in args:
+        total += arg
+    return total
+```
+这里，*args 表示参数数目不定，可以看成一个元组，把第一个参数后面的参数当作元组中的元素。
+```
+print add(1, 2, 3, 4)
+```
+这样定义的函数不能使用关键词传入参数，要使用关键词，可以这样：
+```
+def add(x, **kwargs):
+    total = x
+    for arg, value in kwargs.items():
+        print "adding ", arg
+        total += value
+    return total
+```
+这里， \*\*kwargs 表示参数数目不定，相当于一个字典，关键词和值对应于键值对。
+6. 函数可以返回多个值，事实上，Python将返回的两个值变成了元组。
+7. 事实上，不仅仅返回值可以用元组表示，也可以将参数用元组以这种方式传入。
+8. 可以通过 map 的方式利用函数来生成序列，
+```
+def sqr(x): 
+    return x ** 2
+a = [2,3,4]
+print map(sqr, a)
+```
+9. map的用法为：
+```
+map(aFun, aSeq)
+```
+将函数 aFun 应用到序列 aSeq 上的每一个元素上，返回一个列表，不管这个序列原来是什么类型。事实上，根据函数参数的多少，map 可以接受多组序列，将其对应的元素作为参数传入函数。
+### 模块
+1. 在导入时，Python会执行一遍模块中的所有内容。ex1.py 中所有的变量都被载入了当前环境中，不过要使用
+```
+ex1.变量名
+```
+的方法来查看或者修改这些变量。
+2. 为了提高效率，Python只会载入模块一次，已经载入的模块再次载入时，Python并不会真正执行载入操作，哪怕模块的内容已经改变。
+```
+import ex1
+reload(ex1)
+os.remove('ex1.py')
+```
+3. 有时候我们想将一个 .py 文件既当作脚本，又能当作模块用，这个时候可以使用 __name__ 这个属性。只有当文件被当作脚本执行的时候， __name__的值才会是 '__main__'。
+4. 可以从模块中导入变量,或者使用 * 导入所有变量。
+5. **包：**
+假设我们有这样的一个文件夹：
+foo/
+    * __init__.py
+    * bar.py (defines func)
+    * baz.py (defines zap)
+这意味着 foo 是一个包，我们可以这样导入其中的内容：
+* from foo.bar import func
+* from foo.baz import zap
+bar 和 baz 都是 foo 文件夹下的 .py 文件。
+导入包要求：
+    * 文件夹 foo 在Python的搜索路径中
+    * __init__.py 表示 foo 是一个包，它可以是个空文件。
+    
+### 异常
+1. 一旦 try 块中的内容出现了异常，那么 try 块后面的内容会被忽略，Python会寻找 except 里面有没有对应的内容，如果找到，就执行对应的块，没有则抛出这个异常。
+2. 将except 的值改成 Exception 类，来捕获所有的异常。
+3. 异常是标准库中的类，这意味着我们可以自定义异常类。
+4. 这里我们定义了一个继承自 ValueError 的异常类，异常类一般接收一个字符串作为输入，并把这个字符串当作异常信息，例如：
+```
+class CommandError(ValueError):
+    pass
+    
+valid_commands = {'start', 'stop', 'pause'}
+
+while True:
+    command = raw_input('> ')
+    if command.lower() not in valid_commands:
+        raise CommandError('Invalid commmand: %s' % command)
+```
+我们使用 raise 关键词来抛出异常。
+5. try/catch 块还有一个可选的关键词 finally。不管 try 块有没有异常， finally 块的内容总是会被执行，而且会在抛出异常前执行，因此可以用来作为安全保证，比如确保打开的文件被关闭。
+```
+try:
+    print 1 / 0
+except ZeroDivisionError:
+    print 'divide by 0.'
+finally:
+    print 'finally was called.'
+```
+6. 为了得到异常的具体信息，我们将这个 ValueError 具现化：
+```
+import math
+
+while True:
+    try:
+        text = raw_input('> ')
+        if text[0] == 'q':
+            break
+        x = float(text)
+        y = 1 / math.log10(x)
+        print "1 / log10({0}) = {1}".format(x, y)
+    except ValueError as exc:
+        if exc.message == "math domain error":
+            print "the value must be greater than 0"
+        else:
+            print "could not convert '%s' to float" % text
+    except ZeroDivisionError:
+        print "the value must not be 1"
+    except Exception as exc:
+        print "unexpected error:", exc.message
+```
+7.
+
+
+
+
+
+
+
 
 
 
