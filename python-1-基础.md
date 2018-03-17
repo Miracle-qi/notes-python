@@ -428,9 +428,67 @@ while True:
     except Exception as exc:
         print "unexpected error:", exc.message
 ```
-7.
+### 警告
+1. 出现了一些需要让用户知道的问题，但又不想停止程序，这时候我们可以使用警告，首先导入警告模块：
+```
+import warnings
+```
+在需要的地方，我们使用 warnings 中的 warn 函数：
+```
+warn(msg, WarningType = UserWarning)
+```
+2. 有时候我们想要忽略特定类型的警告，可以使用 warnings 的 filterwarnings 函数：
+```
+filterwarnings(action, category)
+```
+将 action 设置为 'ignore' 便可以忽略特定类型的警告。
 
-
+### 文件读写
+1. 使用 open 函数或者 file 函数来读文件，使用文件名的字符串作为输入参数：
+```
+f = open('test.txt')
+f = file('test.txt') #这两种方式没有太大区别。
+```
+2. 可以使用 read 方法来读入文件中的所有内容：
+```
+text = f.read()
+print text
+```
+3. 也可以按照行读入内容，readlines 方法返回一个列表，每个元素代表文件中每一行的内容：
+```
+f = open('test.txt')
+lines = f.readlines()
+```
+5. 使用完文件之后，需要将文件关闭：
+```
+f.close()
+```
+6. f.write()写入文件，如果文件不存在会被创建，如果文件已经存在， w 模式会覆盖之前写的所有内容。
+```
+f = open('myfile.txt', 'w')
+f.write('another hello world!')
+```
+7. 除了写入模式，还有追加模式 a ，追加模式不会覆盖之前已经写入的内容，而是在之后继续写入：
+```
+f = open('myfile.txt', 'a')
+f.write('... and more')
+```
+8. 写入结束之后一定要将文件关闭，否则可能出现内容没有完全写入文件中的情况。
+9. 这里 f.seek(6) 移动到文件的第6个字符处，然后 f.read() 读出剩下的内容。
+```
+f = open('myfile.txt', 'w+')
+f.write('hello world!')
+f.seek(6)
+print f.read()
+f.close()
+```
+10.  二进制读写模式 b：
+```
+f = open('binary.bin', 'wb')
+```
+11. 不同操作系统的换行符可能不同。
+12. 在Python中，如果一个打开的文件不再被其他变量引用时，它会自动关闭这个文件。所以正常情况下，如果一个文件正常被关闭了，忘记调用文件的 close 方法不会有什么问题。关闭文件可以保证内容已经被写入文件，而不关闭可能会出现意想不到的结果。
+13. 事实上，Python提供了更安全的方法，当 **with块**的内容结束后，Python会自动调用它的close 方法，确保读写的安全。
 
 
 
